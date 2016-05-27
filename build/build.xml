@@ -448,6 +448,10 @@
 		<build-deploy-addon name="ascanrulesAlpha" />
 	</target>
 
+	<target name="deploy-asvspscan" description="deploy asvs passice scan rules">
+		<build-deploy-addon name="asvspscan" />
+	</target>
+
 	<target name="deploy-ascanrulesAlpha-without-help-indexes" description="deploy the active scan rules">
 		<!-- To facilitate quick Dev builds -->
 		<build-deploy-addon-without-help-indexes name="ascanrulesAlpha" />
