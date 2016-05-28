@@ -10,12 +10,14 @@
 	<extensions>
 		<extension>org.zaproxy.zap.extension.asvspscan.SessionManagement.SecureCookieTag</extension>
 		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.HttpOnlyCookieTag</pscanrule>
-	</extensions>
+        <pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.DomainTag</pscanrule>
+    </extensions>
 	<ascanrules/>
 	<pscanrules>
 		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.SecureCookieTag</pscanrule>
 		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.HttpOnlyCookieTag</pscanrule>
-	</pscanrules>
+        <pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.DomainTag</pscanrule>
+    </pscanrules>
 	<filters/>
 	<files>
 		<file>vulnerabilities.db</file>

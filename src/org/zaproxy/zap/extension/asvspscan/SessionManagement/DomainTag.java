@@ -1,6 +1,8 @@
 package org.zaproxy.zap.extension.asvspscan.SessionManagement;
 
 import net.htmlparser.jericho.Source;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.Alert;
 import org.parosproxy.paros.network.HttpHeader;
@@ -11,13 +13,13 @@ import org.zaproxy.zap.extension.pscan.PluginPassiveScanner;
 import java.util.Vector;
 
 /**
- * Created by msostar on 15.5.2016..
+ * Created by msostar on 10.5.2016..
  */
-public class HttpOnlyCookieTag extends PluginPassiveScanner {
+public class DomainTag extends PluginPassiveScanner {
 
   //  private static Vulnerability vuln = Vulnerabilities.getVulnerability("wasc_20");
     private PassiveScanThread parent = null;
-    private static final Logger logger = Logger.getLogger(HttpOnlyCookieTag.class);
+    private static final Logger logger = Logger.getLogger(DomainTag.class);
 
 
 
@@ -29,57 +31,57 @@ public class HttpOnlyCookieTag extends PluginPassiveScanner {
     @Override
     public void scanHttpResponseReceive(HttpMessage msg, int id, Source source) {
 
+
         long start = System.currentTimeMillis();
 
         Vector<String> cookies1 = msg.getResponseHeader().getHeaders(HttpHeader.SET_COOKIE);
 
+
         if (cookies1 != null) {
             for (String cookie : cookies1) {
+                if (cookie.toLowerCase().contains("domain")) {
 
+                    URI url = msg.getRequestHeader().getURI();
+                    String shortURL="";
+                    try {
+                        shortURL= url.getHost().toLowerCase().toString();
 
-                if (cookie.toLowerCase().contains("httponly")) {
-                    break;
+                    } catch (URIException e) {
+                        e.printStackTrace();
+                    }
 
-                }else {
+                    int bla= cookie.toLowerCase().lastIndexOf("domain")+ 7;
+                    int bla2= cookie.toLowerCase().indexOf(" ", bla+10);
 
-                    Alert alert = new Alert(getPluginId(), Alert.RISK_LOW, Alert.CONFIDENCE_HIGH, getName());
-                    alert.setDetail(
-                            "HttpOnly flag isn't turned on",
-                            msg.getRequestHeader().getURI().toString(),
-                            "",    // Param
-                            "", // Attack
-                            "The “HttpOnly” cookie attribute instructs web browsers not to allow scripts (e.g. JavaScript or VBscript) an ability to access the cookies via the DOM document.cookie object. This session ID protection is mandatory to prevent session ID stealing through XSS attacks.", // Other info
-                            "Set HttpOnly flag in cookie",
-                            "https://www.owasp.org/index.php/HttpOnly",
-                            "",    // Evidence
-                            0,    // CWE Id
-                            0,    // WASC Id
-                            msg);
+                    if(bla2==-1){
+                        bla2= cookie.toLowerCase().indexOf(";", bla+10);
+                        System.out.println(bla + "blaaaa111" + bla2);
 
-                    parent.raiseAlert(id, alert);
-                }
-            }
-        }
+                        if(bla2==-1){
+                            bla2= cookie.toLowerCase().length();
+                            System.out.println(bla + "blaaaa222" + bla2);
 
-        Vector<String> cookies2 = msg.getResponseHeader().getHeaders(HttpHeader.SET_COOKIE2);
+                        }
+                    }
+                    System.out.println(cookie.toLowerCase());
 
-        if (cookies2 != null) {
-            for (String cookie : cookies2) {
-                if (cookie.toLowerCase().contains("httponly")) {
+                    System.out.println(bla + "blaaaa" + bla2);
 
-                    break;
+                    String proba= cookie.substring(bla, bla2);
+
+                    System.out.println(proba + "blaaaa");
 
                 }else {
 
-                    Alert alert = new Alert(getPluginId(), Alert.RISK_LOW, Alert.CONFIDENCE_HIGH, getName());
+                    Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
                     alert.setDetail(
-                            "HttpOnly flag isn't turned on",
+                            "Domain is set too loosely",
                             msg.getRequestHeader().getURI().toString(),
                             "",    // Param
                             "", // Attack
                             "", // Other info
-                            "Set HttpOnly flag in cookie",
-                            "https://www.owasp.org/index.php/HttpOnly",
+                            "Set secure flag in cookie",
+                            "https://www.owasp.org/index.php/SecureFlag",
                             "",    // Evidence
                             0,    // CWE Id
                             0,    // WASC Id
@@ -89,6 +91,7 @@ public class HttpOnlyCookieTag extends PluginPassiveScanner {
                 }
             }
         }
+
 
 
         if (logger.isDebugEnabled()) {
@@ -109,7 +112,7 @@ public class HttpOnlyCookieTag extends PluginPassiveScanner {
 		 * This should be unique across all active and passive rules.
 		 * The master list is https://github.com/zaproxy/zaproxy/blob/develop/src/doc/alerts.xml
 		 */
-        return 10010;
+        return 10107;
     }
 
     @Override
@@ -120,7 +123,7 @@ public class HttpOnlyCookieTag extends PluginPassiveScanner {
             return "Example Passive Scanner: " + vuln.getAlert();
         }
         */
-        return "Cookie: Set HttpOnly Tag";
+        return "Cookie: Domain is set too loosely ";
     }
 
 }

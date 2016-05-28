@@ -42,13 +42,15 @@ public class SecureCookieTag extends PluginPassiveScanner {
 
                 }else {
 
-                    Alert alert = new Alert(getPluginId(), Alert.RISK_MEDIUM, Alert.CONFIDENCE_HIGH, getName());
+                    Alert alert = new Alert(getPluginId(), Alert.RISK_LOW, Alert.CONFIDENCE_HIGH, getName());
                     alert.setDetail(
                             "Secure flag isn't turned on",
                             msg.getRequestHeader().getURI().toString(),
                             "",    // Param
                             "", // Attack
-                            "", // Other info
+                            "The “Secure” cookie attribute instructs web browsers to only send the cookie through an encrypted HTTPS (SSL/TLS) connection. This session protection mechanism is mandatory to prevent the disclosure of the session ID through MitM (Man-in-the-Middle) attacks. It ensures that an attacker cannot simply capture the session ID from web browser traffic.\n" +
+                                    "\n" +
+                                    "Forcing the web application to only use HTTPS for its communication (even when port TCP/80, HTTP, is closed in the web application host) does not protect against session ID disclosure if the “Secure” cookie has not been set - the web browser can be deceived to disclose the session ID over an unencrypted HTTP connection. The attacker can intercept and manipulate the victim user traffic and inject an HTTP unencrypted reference to the web application that will force the web browser to submit the session ID in the clear.", // Other info
                             "Set secure flag in cookie",
                             "https://www.owasp.org/index.php/SecureFlag",
                             "",    // Evidence
@@ -71,7 +73,7 @@ public class SecureCookieTag extends PluginPassiveScanner {
 
                 }else {
 
-                    Alert alert = new Alert(getPluginId(), Alert.RISK_MEDIUM, Alert.CONFIDENCE_HIGH, getName());
+                    Alert alert = new Alert(getPluginId(), Alert.RISK_LOW, Alert.CONFIDENCE_HIGH, getName());
                     alert.setDetail(
                             "Secure flag isn't turned on",
                             msg.getRequestHeader().getURI().toString(),
