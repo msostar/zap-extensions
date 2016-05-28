@@ -1,6 +1,6 @@
 <zapaddon>
 	<name>ASVS passive scanner rules (alpha)</name>
-	<version>1</version>
+	<version>2</version>
 	<status>alpha</status>
 	<description>ASVS alpha quality Passive Scanner rules</description>
 	<author>Martin Šoštar</author>
@@ -8,12 +8,14 @@
 	<changes>
 	</changes>
 	<extensions>
-		<extension>org.zaproxy.zap.extension.asvspscan.SessionManagement</extension>
-    </extensions>
+		<extension>org.zaproxy.zap.extension.asvspscan.SessionManagement.SecureCookieTag</extension>
+		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.HttpOnlyCookieTag</pscanrule>
+	</extensions>
 	<ascanrules/>
 	<pscanrules>
-		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement</pscanrule>
-    </pscanrules>
+		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.SecureCookieTag</pscanrule>
+		<pscanrule>org.zaproxy.zap.extension.asvspscan.SessionManagement.HttpOnlyCookieTag</pscanrule>
+	</pscanrules>
 	<filters/>
 	<files>
 		<file>vulnerabilities.db</file>
