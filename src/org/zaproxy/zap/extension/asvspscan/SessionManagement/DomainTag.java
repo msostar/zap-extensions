@@ -20,6 +20,9 @@ public class DomainTag extends PluginPassiveScanner {
   //  private static Vulnerability vuln = Vulnerabilities.getVulnerability("wasc_20");
     private PassiveScanThread parent = null;
     private static final Logger logger = Logger.getLogger(DomainTag.class);
+    private String DomainDesc="When no domain is set in the cookie, the cookie should only match the exact host name of the request. No sub domains, no partial matches. This means simply not including the domain attribute – it is not valid to set an empty domain attribute. Unfortunately, Internet Explorer appears to treat this as the host name along with any subdomains.\n" +
+            "When setting a domain in the cookie, the safe choice is to have it preceded by a dot, like .erik.io. The cookie will match with all sub domains.\n" +
+            "Setting a cookie domain without a preceding dot, like erik.io, is invalid in RFC 2109 implementations, and will produce the same behaviour as with a preceding dot on other implementations. There is no way to restrict a cookie to a specific explicitly set domain, without sub domains being included.";
 
 
 
@@ -41,53 +44,84 @@ public class DomainTag extends PluginPassiveScanner {
             for (String cookie : cookies1) {
                 if (cookie.toLowerCase().contains("domain")) {
 
-                    URI url = msg.getRequestHeader().getURI();
-                    String shortURL="";
-                    try {
-                        shortURL= url.getHost().toLowerCase().toString();
-
-                    } catch (URIException e) {
-                        e.printStackTrace();
-                    }
-
-                    int bla= cookie.toLowerCase().lastIndexOf("domain")+ 7;
-                    int bla2= cookie.toLowerCase().indexOf(" ", bla+10);
-
-                    if(bla2==-1){
-                        bla2= cookie.toLowerCase().indexOf(";", bla+10);
-                        System.out.println(bla + "blaaaa111" + bla2);
-
-                        if(bla2==-1){
-                            bla2= cookie.toLowerCase().length();
-                            System.out.println(bla + "blaaaa222" + bla2);
-
+                    int domainValue1= cookie.toLowerCase().lastIndexOf("domain")+ 7;
+                    int domainValue2= cookie.toLowerCase().indexOf(";", domainValue1+1);
+                    if(domainValue2==-1){
+                        domainValue2= cookie.toLowerCase().indexOf(" ", domainValue1+1);
+                        if(domainValue2==-1){
+                            domainValue2= cookie.toLowerCase().length();
                         }
                     }
-                    System.out.println(cookie.toLowerCase());
 
-                    System.out.println(bla + "blaaaa" + bla2);
+                    String proba= cookie.substring(domainValue1, domainValue2);
 
-                    String proba= cookie.substring(bla, bla2);
+                    if(proba.toLowerCase().indexOf(".")<2){
 
-                    System.out.println(proba + "blaaaa");
+                        System.out.println("1.  "+ proba);
+
+                        Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
+                        alert.setDetail(
+                                "Domain is maybe set too loosely",
+                                msg.getRequestHeader().getURI().toString(),
+                                "",    // Param
+                                "", // Attack
+                                DomainDesc, // Other info
+                                "Re-evaluate whether subdomains can set and use cookies",
+                                "http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/\n" + "https://www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)",
+                                "",    // Evidence
+                                0,    // CWE Id
+                                0,    // WASC Id
+                                msg);
+
+                        parent.raiseAlert(id, alert);
+
+                    }
+
+                    if(proba.toLowerCase().indexOf(".")>1){
+
+
+                        System.out.println("2.  "+ proba);
+
+                        Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
+                        alert.setDetail(
+                                "Domain is deprecated",
+                                msg.getRequestHeader().getURI().toString(),
+                                "",    // Param
+                                "", // Attack
+                                DomainDesc, // Other info
+                                "Domain must contain \" . \" at the beginning",
+                                "http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/\n" + "https://www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)",
+                                "",    // Evidence
+                                0,    // CWE Id
+                                0,    // WASC Id
+                                msg);
+
+                        parent.raiseAlert(id, alert);
+
+                    }
+
+
 
                 }else {
 
+                    System.out.println("3.  ");
+
                     Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
                     alert.setDetail(
-                            "Domain is set too loosely",
+                            "Domain is maybe set too strictly",
                             msg.getRequestHeader().getURI().toString(),
                             "",    // Param
                             "", // Attack
-                            "", // Other info
-                            "Set secure flag in cookie",
-                            "https://www.owasp.org/index.php/SecureFlag",
+                            DomainDesc, // Other info
+                            "Domain tag isn't set. Cookies can't be used by subdomains",
+                            "http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/\n" + "https://www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)",
                             "",    // Evidence
                             0,    // CWE Id
                             0,    // WASC Id
                             msg);
 
                     parent.raiseAlert(id, alert);
+
                 }
             }
         }
@@ -123,7 +157,7 @@ public class DomainTag extends PluginPassiveScanner {
             return "Example Passive Scanner: " + vuln.getAlert();
         }
         */
-        return "Cookie: Domain is set too loosely ";
+        return "Cookie: Domain is maybe set wrong ";
     }
 
 }
