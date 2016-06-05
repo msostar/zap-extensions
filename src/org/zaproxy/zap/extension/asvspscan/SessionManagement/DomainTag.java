@@ -57,7 +57,6 @@ public class DomainTag extends PluginPassiveScanner {
 
                     if(proba.toLowerCase().indexOf(".")<2){
 
-                        System.out.println("1.  "+ proba);
 
                         Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
                         alert.setDetail(
@@ -80,7 +79,6 @@ public class DomainTag extends PluginPassiveScanner {
                     if(proba.toLowerCase().indexOf(".")>1){
 
 
-                        System.out.println("2.  "+ proba);
 
                         Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
                         alert.setDetail(
@@ -97,14 +95,9 @@ public class DomainTag extends PluginPassiveScanner {
                                 msg);
 
                         parent.raiseAlert(id, alert);
-
                     }
 
-
-
                 }else {
-
-                    System.out.println("3.  ");
 
                     Alert alert = new Alert(getPluginId(), Alert.RISK_INFO, Alert.CONFIDENCE_MEDIUM, getName());
                     alert.setDetail(
