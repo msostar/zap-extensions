@@ -38,7 +38,7 @@
     <libelement value="jar://$MODULE_DIR$/testlib/objenesis-1.2.jar!/" />
     <libelement value="jar://$MODULE_DIR$/testlib/powermock-mockito-1.4.12-full.jar!/" />
     <libelement value="jar://$MODULE_DIR$/testlib/simple-5.0.2.jar!/" />
-    <libelement value="file://E:\GitHub\zap-extensions\lib\selenium-release-3.zap" />
+    <libelement value="file://C:\Users\msostar\Documents\GitHub\zap-extensions\lib\selenium-release-3.zap" />
     <libelement value="jar://$MODULE_DIR$/lib/zap-2.4.3.jar!/" />
     <libelement value="jar://$MODULE_DIR$/lib/metadata-extractor-2.8.1.jar!/" />
     <libelement value="jar://$MODULE_DIR$/lib/xmpcore-5.1.2.jar!/" />
